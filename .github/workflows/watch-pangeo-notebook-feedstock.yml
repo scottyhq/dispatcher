@@ -59,20 +59,21 @@ jobs:
           find: "dask-labextension =.*"
           replace: "dask-labextension =${{ steps.latest_version_labext.outputs.version }}"
 
-      - name: Get latest ipywidgets version
-        id: latest_version_ipywidgets
-        uses: jacobtomlinson/gha-anaconda-package-version@0.1.2
-        with:
-          org: "conda-forge"
-          package: "ipywidgets"
+# Note sure why this fails: https://github.com/conda-forge/pangeo-notebook-feedstock/issues/61
+#      - name: Get latest ipywidgets version
+#        id: latest_version_ipywidgets
+#        uses: jacobtomlinson/gha-anaconda-package-version@0.1.2
+#        with:
+#          org: "conda-forge"
+#          package: "ipywidgets"
 
-      - name: Find and Replace ipywidgets
-        id: ipywidgets
-        uses: jacobtomlinson/gha-find-replace@0.1.2
-        with:
-          include: "meta.yaml"
-          find: "ipywidgets =.*"
-          replace: "ipywidgets =${{ steps.latest_version_ipywidgets.outputs.version }}"
+#      - name: Find and Replace ipywidgets
+#        id: ipywidgets
+#        uses: jacobtomlinson/gha-find-replace@0.1.2
+#        with:
+#          include: "meta.yaml"
+#          find: "ipywidgets =.*"
+#          replace: "ipywidgets =${{ steps.latest_version_ipywidgets.outputs.version }}"
 
       - name: Get latest jupyter-server-proxy version
         id: latest_version_server_proxy
@@ -160,7 +161,6 @@ jobs:
                 -  jupyter-server-proxy =`${{ steps.latest_version_server_proxy.outputs.version }}`
                 -  jupyterhub-singleuser =`${{ steps.latest_version_jupyterhub_singleuser.outputs.version }}`
                 -  jupyterlab =`${{ steps.latest_version_jupyterlab.outputs.version }}`
-                -  ipywidgets =`${{ steps.latest_version_ipywidgets.outputs.version }}`
                 -  nbgitpuller =`${{ steps.latest_version_nbgitpuller.outputs.version }}`
 
             Notes before merging this PR:
