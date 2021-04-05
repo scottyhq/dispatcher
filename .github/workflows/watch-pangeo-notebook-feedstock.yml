@@ -4,14 +4,15 @@ name: PangeoNotebookUpdater
 on:
   push:
   workflow_dispatch:
-  schedule:
+  #schedule:
     #- cron: "0 * * * *"
-    - cron:  "*/5 * * * *"
+    #- cron:  "*/5 * * * *"
 
 jobs:
   check-version:
     runs-on: ubuntu-latest
     steps:
+      # NOTE: we checkout upstream conda-forge/pangeo-notebook-feedstock
       - name: Checkout Repository
         uses: actions/checkout@v2
         with:
@@ -29,7 +30,7 @@ jobs:
         run: echo "::set-output name=version::$(date +'%Y.%m.%d')"
 
       - name: Get latest pangeo-dask version
-        id: latest_version_dask
+        id: latest_version_pangeodask
         uses: scottyhq/gha-anaconda-package-version@master
         with:
           org: "conda-forge"
@@ -37,12 +38,12 @@ jobs:
           version_system: "CalVer"
 
       - name: Find and Replace pangeo-dask
-        id: dask
+        id: pangeodask
         uses: jacobtomlinson/gha-find-replace@master
         with:
           include: "meta.yaml"
           find: "pangeo-dask =.*"
-          replace: "pangeo-dask =${{ steps.latest_version_dask.outputs.version }}"
+          replace: "pangeo-dask =${{ steps.latest_version_pangeodask.outputs.version }}"
 
       - name: Get latest dask-labextension version
         id: latest_version_labext
@@ -65,7 +66,7 @@ jobs:
        with:
          org: "conda-forge"
          package: "ipywidgets"
-         
+
      - name: Find and Replace ipywidgets
        id: ipywidgets
        uses: jacobtomlinson/gha-find-replace@master
@@ -89,7 +90,7 @@ jobs:
           find: "jupyter-server-proxy =.*"
           replace: "jupyter-server-proxy =${{ steps.latest_version_server_proxy.outputs.version }}"
 
-      - name: Get latest jupyterhub-singleruser version
+      - name: Get latest jupyterhub-singleuser version
         id: latest_version_jupyterhub_singleuser
         uses: scottyhq/gha-anaconda-package-version@master
         with:
@@ -135,7 +136,7 @@ jobs:
           replace: "nbgitpuller =${{ steps.latest_version_nbgitpuller.outputs.version }}"
 
       - name: Find and Replace CalVer
-        if: steps.dask.outputs.modifiedFiles > 0 || steps.labextension.outputs.modifiedFiles > 0 || steps.server_proxy.outputs.modifiedFiles > 0 || steps.jupyterhub_singleuser.outputs.modifiedFiles > 0 || steps.jupyterlab.outputs.modifiedFiles > 0 || steps.nbgitpuller.outputs.modifiedFiles > 0
+        if: steps.labextension.outputs.modifiedFiles > 0 || steps.ipywidgets.outputs.modifiedFiles > 0 || steps.server_proxy.outputs.modifiedFiles > 0 || steps.jupyterhub_singleuser.outputs.modifiedFiles > 0 || steps.jupyterlab.outputs.modifiedFiles > 0 || steps.pangeodask.outputs.modifiedFiles > 0 || steps.nbgitpuller.outputs.modifiedFiles > 0
         uses: jacobtomlinson/gha-find-replace@master
         with:
           include: "meta.yaml"
@@ -143,27 +144,22 @@ jobs:
           replace: "{% set version = \"${{ steps.calver.outputs.version }}\" %}"
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v2
+        uses: peter-evans/create-pull-request@v3
         with:
           commit-message: "Update pangeo-notebook metapackage version(s)"
           title: "Update pangeo-notebook metapackage version(s)"
-          #reviewers: "scottyhq"
           branch: "upgrade-notebook-versions"
           token: ${{ secrets.PAT }}
-          request-to-parent: true
+          push-to-fork: pangeo-bot/pangeo-notebook-feedstock
           body: |
             It is very likely that one or more of the packages in this metapackage are out of date.
+            https://github.com/pangeo-bot/dispatcher
 
             This PR updating one or more the following packages:
-                -  pangeo-dask =`${{ steps.latest_version_dask.outputs.version }}`
                 -  dask-labextension =`${{ steps.latest_version_labext.outputs.version }}`
+                -  ipywidgets =`${{ steps.latest_version_ipywidgets.outputs.version }}`
                 -  jupyter-server-proxy =`${{ steps.latest_version_server_proxy.outputs.version }}`
                 -  jupyterhub-singleuser =`${{ steps.latest_version_jupyterhub_singleuser.outputs.version }}`
                 -  jupyterlab =`${{ steps.latest_version_jupyterlab.outputs.version }}`
+                -  pangeo-dask =`${{ steps.latest_version_pangeodask.outputs.version }}`
                 -  nbgitpuller =`${{ steps.latest_version_nbgitpuller.outputs.version }}`
-
-            Notes before merging this PR:
-              1. Feel free to push to the bot's branch to update this PR if needed.
-              2. Checklist before merging this PR:
-              - [ ] Dependencies have been updated if changed
-              - [ ] Tests have passed
