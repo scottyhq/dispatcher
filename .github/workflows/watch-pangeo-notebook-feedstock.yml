@@ -2,6 +2,7 @@
 name: PangeoNotebookUpdater
 
 on:
+  workflow_dispatch:
   schedule:
     #- cron: "0 * * * *"
     - cron:  "*/5 * * * *"
