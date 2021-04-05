@@ -96,7 +96,7 @@ jobs:
           title: "Update pangeo-dask metapackage version(s)"
           branch: "upgrade-dask-versions"
           token: ${{ secrets.PAT }}
-          push-to-fork: pangeo-bot/pangeo-notebook-feedstock
+          push-to-fork: pangeo-bot/pangeo-dask-feedstock
           body: |
             It is very likely that one or more of the packages in this metapackage are out of date.
             https://github.com/pangeo-bot/dispatcher
