@@ -60,12 +60,12 @@ jobs:
           replace: "dask-labextension =${{ steps.latest_version_labext.outputs.version }}"
 
 # Note sure why this fails: https://github.com/conda-forge/pangeo-notebook-feedstock/issues/61
-     # - name: Get latest ipywidgets version
-     #   id: latest_version_ipywidgets
-     #   uses: scottyhq/gha-anaconda-package-version@master
-     #   with:
-     #     org: "conda-forge"
-     #     package: "ipywidgets"
+     - name: Get latest ipywidgets version
+       id: latest_version_ipywidgets
+       uses: scottyhq/gha-anaconda-package-version@master
+       with:
+         org: "conda-forge"
+         package: "ipywidgets"
 
 #      - name: Find and Replace ipywidgets
 #        id: ipywidgets
