@@ -30,7 +30,7 @@ jobs:
 
       - name: Get latest pangeo-dask version
         id: latest_version_dask
-        uses: jhamman/gha-anaconda-package-version@feature/calver
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.2
         with:
           org: "conda-forge"
           package: "pangeo-dask"
@@ -38,7 +38,7 @@ jobs:
 
       - name: Find and Replace pangeo-dask
         id: dask
-        uses: jacobtomlinson/gha-find-replace@0.1.1
+        uses: jacobtomlinson/gha-find-replace@0.1.2
         with:
           include: "meta.yaml"
           find: "pangeo-dask =.*"
@@ -46,14 +46,14 @@ jobs:
 
       - name: Get latest dask-labextension version
         id: latest_version_labext
-        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.2
         with:
           org: "conda-forge"
           package: "dask-labextension"
 
       - name: Find and Replace dask-labextension
         id: labextension
-        uses: jacobtomlinson/gha-find-replace@0.1.1
+        uses: jacobtomlinson/gha-find-replace@0.1.2
         with:
           include: "meta.yaml"
           find: "dask-labextension =.*"
@@ -61,14 +61,14 @@ jobs:
 
       - name: Get latest ipywidgets version
         id: latest_version_ipywidgets
-        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.2
         with:
           org: "conda-forge"
           package: "ipywidgets"
 
       - name: Find and Replace ipywidgets
         id: ipywidgets
-        uses: jacobtomlinson/gha-find-replace@0.1.1
+        uses: jacobtomlinson/gha-find-replace@0.1.2
         with:
           include: "meta.yaml"
           find: "ipywidgets =.*"
@@ -76,14 +76,14 @@ jobs:
 
       - name: Get latest jupyter-server-proxy version
         id: latest_version_server_proxy
-        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.2
         with:
           org: "conda-forge"
           package: "jupyter-server-proxy"
 
       - name: Find and Replace jupyter-server-proxy
         id: server_proxy
-        uses: jacobtomlinson/gha-find-replace@0.1.1
+        uses: jacobtomlinson/gha-find-replace@0.1.2
         with:
           include: "meta.yaml"
           find: "jupyter-server-proxy =.*"
@@ -91,14 +91,14 @@ jobs:
 
       - name: Get latest jupyterhub-singleruser version
         id: latest_version_jupyterhub_singleuser
-        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.2
         with:
           org: "conda-forge"
           package: "jupyterhub-singleuser"
 
       - name: Find and Replace jupyterhub-singleuser
         id: jupyterhub_singleuser
-        uses: jacobtomlinson/gha-find-replace@0.1.1
+        uses: jacobtomlinson/gha-find-replace@0.1.2
         with:
           include: "meta.yaml"
           find: "jupyterhub-singleuser =.*"
@@ -106,14 +106,14 @@ jobs:
 
       - name: Get latest jupyterlab version
         id: latest_version_jupyterlab
-        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.2
         with:
           org: "conda-forge"
           package: "jupyterlab"
 
       - name: Find and Replace jupyterlab
         id: jupyterlab
-        uses: jacobtomlinson/gha-find-replace@0.1.1
+        uses: jacobtomlinson/gha-find-replace@0.1.2
         with:
           include: "meta.yaml"
           find: "jupyterlab =.*"
@@ -121,14 +121,14 @@ jobs:
 
       - name: Get latest nbgitpuller version
         id: latest_version_nbgitpuller
-        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.2
         with:
           org: "conda-forge"
           package: "nbgitpuller"
 
       - name: Find and Replace nbgitpuller
         id: nbgitpuller
-        uses: jacobtomlinson/gha-find-replace@0.1.1
+        uses: jacobtomlinson/gha-find-replace@0.1.2
         with:
           include: "meta.yaml"
           find: "nbgitpuller =.*"
@@ -136,7 +136,7 @@ jobs:
 
       - name: Find and Replace CalVer
         if: steps.dask.outputs.modifiedFiles > 0 || steps.labextension.outputs.modifiedFiles > 0 || steps.server_proxy.outputs.modifiedFiles > 0 || steps.jupyterhub_singleuser.outputs.modifiedFiles > 0 || steps.jupyterlab.outputs.modifiedFiles > 0 || steps.nbgitpuller.outputs.modifiedFiles > 0
-        uses: jacobtomlinson/gha-find-replace@0.1.1
+        uses: jacobtomlinson/gha-find-replace@0.1.2
         with:
           include: "meta.yaml"
           find: "{% set version = \".*\" %}"
