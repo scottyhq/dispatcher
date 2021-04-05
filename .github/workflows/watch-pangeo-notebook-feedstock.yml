@@ -1,0 +1,168 @@
+# Check for new versions of dask on Conda Forge
+name: PangeoNotebookUpdater
+
+on:
+  schedule:
+    #- cron: "0 * * * *"
+    - cron:  "*/5 * * * *"
+
+jobs:
+  check-version:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+        with:
+          repository: 'conda-forge/pangeo-notebook-feedstock'
+          ref: 'master'
+
+      - name: Set Origin
+        run: |
+          git config user.password ${{ secrets.PAT }}
+          git remote set-url origin https://github.com/pangeo-bot/pangeo-notebook-feedstock
+          git fetch --unshallow -p origin
+
+      - name: calver
+        id: calver
+        run: echo "::set-output name=version::$(date +'%Y.%m.%d')"
+
+      - name: Get latest pangeo-dask version
+        id: latest_version_dask
+        uses: jhamman/gha-anaconda-package-version@feature/calver
+        with:
+          org: "conda-forge"
+          package: "pangeo-dask"
+          version_system: "CalVer"
+
+      - name: Find and Replace pangeo-dask
+        id: dask
+        uses: jacobtomlinson/gha-find-replace@0.1.1
+        with:
+          include: "meta.yaml"
+          find: "pangeo-dask =.*"
+          replace: "pangeo-dask =${{ steps.latest_version_dask.outputs.version }}"
+
+      - name: Get latest dask-labextension version
+        id: latest_version_labext
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        with:
+          org: "conda-forge"
+          package: "dask-labextension"
+
+      - name: Find and Replace dask-labextension
+        id: labextension
+        uses: jacobtomlinson/gha-find-replace@0.1.1
+        with:
+          include: "meta.yaml"
+          find: "dask-labextension =.*"
+          replace: "dask-labextension =${{ steps.latest_version_labext.outputs.version }}"
+
+      - name: Get latest ipywidgets version
+        id: latest_version_ipywidgets
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        with:
+          org: "conda-forge"
+          package: "ipywidgets"
+
+      - name: Find and Replace ipywidgets
+        id: ipywidgets
+        uses: jacobtomlinson/gha-find-replace@0.1.1
+        with:
+          include: "meta.yaml"
+          find: "ipywidgets =.*"
+          replace: "ipywidgets =${{ steps.latest_version_ipywidgets.outputs.version }}"
+
+      - name: Get latest jupyter-server-proxy version
+        id: latest_version_server_proxy
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        with:
+          org: "conda-forge"
+          package: "jupyter-server-proxy"
+
+      - name: Find and Replace jupyter-server-proxy
+        id: server_proxy
+        uses: jacobtomlinson/gha-find-replace@0.1.1
+        with:
+          include: "meta.yaml"
+          find: "jupyter-server-proxy =.*"
+          replace: "jupyter-server-proxy =${{ steps.latest_version_server_proxy.outputs.version }}"
+
+      - name: Get latest jupyterhub-singleruser version
+        id: latest_version_jupyterhub_singleuser
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        with:
+          org: "conda-forge"
+          package: "jupyterhub-singleuser"
+
+      - name: Find and Replace jupyterhub-singleuser
+        id: jupyterhub_singleuser
+        uses: jacobtomlinson/gha-find-replace@0.1.1
+        with:
+          include: "meta.yaml"
+          find: "jupyterhub-singleuser =.*"
+          replace: "jupyterhub-singleuser =${{ steps.latest_version_jupyterhub_singleuser.outputs.version }}"
+
+      - name: Get latest jupyterlab version
+        id: latest_version_jupyterlab
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        with:
+          org: "conda-forge"
+          package: "jupyterlab"
+
+      - name: Find and Replace jupyterlab
+        id: jupyterlab
+        uses: jacobtomlinson/gha-find-replace@0.1.1
+        with:
+          include: "meta.yaml"
+          find: "jupyterlab =.*"
+          replace: "jupyterlab =${{ steps.latest_version_jupyterlab.outputs.version }}"
+
+      - name: Get latest nbgitpuller version
+        id: latest_version_nbgitpuller
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.1
+        with:
+          org: "conda-forge"
+          package: "nbgitpuller"
+
+      - name: Find and Replace nbgitpuller
+        id: nbgitpuller
+        uses: jacobtomlinson/gha-find-replace@0.1.1
+        with:
+          include: "meta.yaml"
+          find: "nbgitpuller =.*"
+          replace: "nbgitpuller =${{ steps.latest_version_nbgitpuller.outputs.version }}"
+
+      - name: Find and Replace CalVer
+        if: steps.dask.outputs.modifiedFiles > 0 || steps.labextension.outputs.modifiedFiles > 0 || steps.server_proxy.outputs.modifiedFiles > 0 || steps.jupyterhub_singleuser.outputs.modifiedFiles > 0 || steps.jupyterlab.outputs.modifiedFiles > 0 || steps.nbgitpuller.outputs.modifiedFiles > 0
+        uses: jacobtomlinson/gha-find-replace@0.1.1
+        with:
+          include: "meta.yaml"
+          find: "{% set version = \".*\" %}"
+          replace: "{% set version = \"${{ steps.calver.outputs.version }}\" %}"
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v2
+        with:
+          commit-message: "Update pangeo-notebook metapackage version(s)"
+          title: "Update pangeo-notebook metapackage version(s)"
+          #reviewers: "scottyhq"
+          branch: "upgrade-notebook-versions"
+          token: ${{ secrets.PAT }}
+          request-to-parent: true
+          body: |
+            It is very likely that one or more of the packages in this metapackage are out of date.
+
+            This PR updating one or more the following packages:
+                -  pangeo-dask =`${{ steps.latest_version_dask.outputs.version }}`
+                -  dask-labextension =`${{ steps.latest_version_labext.outputs.version }}`
+                -  jupyter-server-proxy =`${{ steps.latest_version_server_proxy.outputs.version }}`
+                -  jupyterhub-singleuser =`${{ steps.latest_version_jupyterhub_singleuser.outputs.version }}`
+                -  jupyterlab =`${{ steps.latest_version_jupyterlab.outputs.version }}`
+                -  ipywidgets =`${{ steps.latest_version_ipywidgets.outputs.version }}`
+                -  nbgitpuller =`${{ steps.latest_version_nbgitpuller.outputs.version }}`
+
+            Notes before merging this PR:
+              1. Feel free to push to the bot's branch to update this PR if needed.
+              2. Checklist before merging this PR:
+              - [ ] Dependencies have been updated if changed
+              - [ ] Tests have passed
