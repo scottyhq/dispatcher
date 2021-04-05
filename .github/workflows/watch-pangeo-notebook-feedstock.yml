@@ -19,12 +19,6 @@ jobs:
           repository: 'conda-forge/pangeo-notebook-feedstock'
           ref: 'master'
 
-      - name: Set Origin
-        run: |
-          git config user.password ${{ secrets.PAT }}
-          git remote set-url origin https://github.com/pangeo-bot/pangeo-notebook-feedstock
-          git fetch --unshallow -p origin
-
       - name: calver
         id: calver
         run: echo "::set-output name=version::$(date +'%Y.%m.%d')"
@@ -59,14 +53,14 @@ jobs:
           include: "meta.yaml"
           find: "dask-labextension =.*"
           replace: "dask-labextension =${{ steps.latest_version_labext.outputs.version }}"
-          
+
       - name: Get latest ipywidgets version
         id: latest_version_ipywidgets
         uses: scottyhq/gha-anaconda-package-version@master
         with:
           org: "conda-forge"
           package: "ipywidgets"
-         
+
       - name: Find and Replace ipywidgets
         id: ipywidgets
         uses: jacobtomlinson/gha-find-replace@master
@@ -149,8 +143,8 @@ jobs:
           commit-message: "Update pangeo-notebook metapackage version(s)"
           title: "Update pangeo-notebook metapackage version(s)"
           branch: "upgrade-notebook-versions"
-          token: ${{ secrets.PAT }}
           push-to-fork: pangeo-bot/pangeo-notebook-feedstock
+          token: ${{ secrets.PAT }}
           body: |
             It is very likely that one or more of the packages in this metapackage are out of date.
             https://github.com/pangeo-bot/dispatcher
