@@ -59,6 +59,7 @@ jobs:
           include: "meta.yaml"
           find: "dask-labextension =.*"
           replace: "dask-labextension =${{ steps.latest_version_labext.outputs.version }}"
+<<<<<<< HEAD
 
      - name: Get latest ipywidgets version
        id: latest_version_ipywidgets
@@ -74,6 +75,23 @@ jobs:
          include: "meta.yaml"
          find: "ipywidgets =.*"
          replace: "ipywidgets =${{ steps.latest_version_ipywidgets.outputs.version }}"
+=======
+          
+      - name: Get latest ipywidgets version
+        id: latest_version_ipywidgets
+        uses: scottyhq/gha-anaconda-package-version@master
+        with:
+          org: "conda-forge"
+          package: "ipywidgets"
+         
+      - name: Find and Replace ipywidgets
+        id: ipywidgets
+        uses: jacobtomlinson/gha-find-replace@master
+        with:
+          include: "meta.yaml"
+          find: "ipywidgets =.*"
+          replace: "ipywidgets =${{ steps.latest_version_ipywidgets.outputs.version }}"
+>>>>>>> 8afa8f2553e14388e7f808b44d67dca1c2c3cdcf
 
       - name: Get latest jupyter-server-proxy version
         id: latest_version_server_proxy
