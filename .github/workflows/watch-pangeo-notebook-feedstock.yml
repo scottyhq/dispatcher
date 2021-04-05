@@ -2,10 +2,9 @@
 name: PangeoNotebookUpdater
 
 on:
-  push:
   workflow_dispatch:
-  #schedule:
-    #- cron: "0 * * * *"
+  schedule:
+    - cron: "0 * * * *"
     #- cron:  "*/5 * * * *"
 
 jobs:
