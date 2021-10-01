@@ -156,3 +156,9 @@ jobs:
                 -  jupyterlab =`${{ steps.latest_version_jupyterlab.outputs.version }}`
                 -  pangeo-dask =`${{ steps.latest_version_pangeodask.outputs.version }}`
                 -  nbgitpuller =`${{ steps.latest_version_nbgitpuller.outputs.version }}`
+
+      - name: Keep scheduled jobs alive
+        uses: gautamkrishnar/keepalive-workflow@1.0.5
+        with:
+          committer_username: "github-actions[bot]"
+          committer_email: "41898282+github-actions[bot]@users.noreply.github.com"

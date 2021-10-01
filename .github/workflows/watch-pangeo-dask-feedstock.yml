@@ -106,3 +106,9 @@ jobs:
                 -  distributed =`${{ steps.latest_version_distributed.outputs.version }}`
                 -  dask-kubernetes =`${{ steps.latest_version_k8s.outputs.version }}`
                 -  dask-gateway =`${{ steps.latest_version_gateway.outputs.version }}`
+
+      - name: Keep scheduled jobs alive
+        uses: gautamkrishnar/keepalive-workflow@1.0.5
+        with:
+          committer_username: "github-actions[bot]"
+          committer_email: "41898282+github-actions[bot]@users.noreply.github.com"
