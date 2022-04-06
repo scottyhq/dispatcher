@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           repository: 'conda-forge/pangeo-notebook-feedstock'
-          ref: 'master'
+          ref: 'main'
 
       - name: calver
         id: calver
