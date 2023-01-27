@@ -135,6 +135,12 @@ jobs:
           find: "nbgitpuller =.*"
           replace: "nbgitpuller =${{ steps.latest_version_nbgitpuller.outputs.version }}"
 
+      - name: Echo modified files
+        env:
+          PANGEODASK_CHANGED: ${{ steps.pangeodask.outputs.modifiedFiles }} 
+        run:
+          echo $PANGEODASK_CHANGED
+
       - name: Find and Replace CalVer
         if: >
           steps.labextension.outputs.modifiedFiles > 0 || 
